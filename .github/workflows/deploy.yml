@@ -1,0 +1,24 @@
+name: Deploy to GCP Cloud Storage
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up gcloud CLI
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        project_id: lineappstest  # ←あなたのGCPプロジェクトID
+        service_account_key: ${{ secrets.GCP_CREDENTIALS }}
+
+    - name: Sync to GCS
+      run: |
+        gsutil -m rsync -r ./ gs://reizi_line_test  # ←あなたのバケット名
